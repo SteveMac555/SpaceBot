@@ -1,6 +1,8 @@
 # SpaceBot - TwitchBot
 This is a Twitch bot framework written in NodeJS, using the Twitch Messaging Interface. The purpose of this framework is to allow you to easily create commands (with permissions) and subscribe to chat events.
 
+![alt text](https://i.imgur.com/ehHCsCW.png)
+
 ## Requirements
 The following modules are required for this bot: underscore, tmi, figlet. You can install them like so:
 
