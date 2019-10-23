@@ -42,6 +42,15 @@ function onPing(channel, userstate, params) {
 }
 ```
 
+### TMI (Twitch Messaging Interface) Events
+Example of how to use an event is included:
+```
+client.on("raided", (channel, username, viewers) => {
+  d_console(`Channel ${channel} is being raided by ${username} with ${viewers} viewers.`, 'c');
+});
+```
+See the TMI documentation on how to use the rest of them.: https://github.com/tmijs/docs/tree/gh-pages/_posts/v1.4.2
+
 ## Features
 * Quickly add commands with permissions.
 * Hook TMI events and perform actions.
