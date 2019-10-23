@@ -5,19 +5,20 @@ const figlet = require("figlet");
 
 const client = new tmi.client({
   identity: {
-    username: "USERNAME",
-    password: "oauth:12345678902134454545"
+    username: "<USERNAME>",
+    password: "oauth:<YOURTOKEN>"
   },
   connection: {
     reconnect: true,
   },
   channels: [
-    "stevemac555",
+    "<YOUR CHANNEL>",
   ]
 });
 
 const cmds = {
     prefix: '!',
+    delay_default: 500,
     commands: {
         ping: {
             responder: 'ping',
@@ -28,13 +29,12 @@ const cmds = {
             responder: 'rand',
             calls: 'onRand',
             permission: ['broadcaster'],
-            delay: 2000
         },
         spacex: {
           responder: 'spacex',
           calls: 'onSpaceX',
           permission: ['broadcaster', 'moderator', 'subscriber', 'viewer'],
-          delay: 5000,
+          delay: 800,
         }
     }
 }
@@ -79,7 +79,7 @@ client.on("message", (channel, userstate, msg, self) => {
         if (v.permission.indexOf(userPermission) > -1) {
           setTimeout(function() {
             eval(v.calls)(channel, userstate, params);
-          }, (v.delay ? v.delay : 1000));
+          }, (v.delay ? v.delay : cmds.delay_default));
           d_console(`Processed command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission}`, 'c');
         } else {
           d_console(`Denied command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission} Required Permission: ${v.permission}`, 'r')
@@ -103,9 +103,7 @@ function onPing(channel, userstate, params) {
 }
 
 function onRand(channel, userstate, params) {
-  var max = params[1];
-  if (isNaN(max)) { max = 100; }
-  client.say(channel, `@${userstate.username} You rolled a ${ Math.round(Math.random() * (max - 1) + 1)}`);
+  client.say(channel, `@${userstate.username} You rolled a ${ Math.round(Math.random() * ((isNaN(params[1]) ? 100 : params[1]) - 1) + 1)}`);
 }
 
 function onSpaceX(channel, userstate, params) {
@@ -114,11 +112,7 @@ function onSpaceX(channel, userstate, params) {
     res.on('data', function(chunk){ body += chunk;});
     res.on('end', function(){
         var data = JSON.parse(body);
-         client.say(channel, "Last mission was " + data.mission_name + " flight " + 
-                    data.flight_number + " it was a " + data.rocket.rocket_name + 
-                    " and launched from " + data.launch_site.site_name_long + " on " 
-                    + data.launch_date_local
-          );
+         client.say(channel, `Last mission was ${data.mission_name} flight ${data.flight_number} it was a ${data.rocket.rocket_name} and launched from ${data.launch_site.site_name_long} on ${data.launch_date_local}`);
     });
   }).on('error', function(e){
         client.say(channel, "Unable to contact SpaceX API.");
