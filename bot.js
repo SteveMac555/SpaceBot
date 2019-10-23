@@ -1,130 +1,138 @@
-/**
- * Requirements.
- * npm install tmi
- * npm install underscore
- */
 const tmi = require('tmi.js');
 const _ = require('underscore');
+const https = require('https');
+const figlet = require("figlet");
 
-/**
- * Options for connecting to Twitch.
- * Username: Chat username
- * Password: OAuth Generated Token. e.g. oauth:12345678abcdefgh
- */
-const opts = {
+const client = new tmi.client({
   identity: {
-    username: "FILL ME IN",
-    password: "FILL ME IN"
+    username: "YOUR USERNAME",
+    password: "oauth:1234567890345657789324435534"
   },
   channels: [
     "stevemac555",
   ]
-};
+});
 
-/**
- * Command settings. 
- * responder: Chat command to use to call it.
- * calls: Method to call, e.g. ping(channel, username, params) 
- * permission: Who can use the command in chat. moderator, subscriber, viewer
- */
 const cmds = {
     prefix: '!',
     commands: {
         ping: {
             responder: 'ping',
             calls: 'onPing',
-            permission: 'viewer'
+            permission: ['broadcaster', 'moderator', 'subscriber', 'viewer']
+        },
+        rand: {
+            responder: 'rand',
+            calls: 'onRand',
+            permission: ['broadcaster', 'moderator']
+        },
+        spacex: {
+          responder: 'spacex',
+          calls: 'onSpaceX',
+          permission: ['broadcaster', 'moderator', 'subscriber', 'viewer']
         }
     }
 }
 
-/**
- * Create connection to Twitch.
- */
-const client = new tmi.client(opts);
-
-/**
- * Register needed event handlers:
- * TMI docs: https://github.com/tmijs/docs/tree/gh-pages/_posts/v1.4.2
- */
-client.on('message', onMessageHandler);
-client.on('connected', onConnectedHandler);
-client.on('disconnected', onDisconnectedHandler);
-client.on('roomstate', onChannelJoinedHandler);
 client.connect();
-
-/**
- * Received a message from Twitch.
- * 
- * @param {*} channel 
- * @param {*} userstate 
- * @param {*} msg 
- * @param {*} self 
- */
-function onMessageHandler (channel, userstate, msg, self) {
-  if (self) { return; }
-
-  if (msg.trim().charAt(0) == cmds.prefix) {
-      var params = msg.trim().split(' ');
-      _.each(cmds.commands, function (v, k) {
-        if ((cmds.prefix + v.responder) == params[0]) {
-            switch (v.permission) {
-                case 'moderator':
-                    if (userstate.mod) {
-                        eval(v.calls)(channel, userstate.username, params);
-                    }
-                break;
-                case 'subscriber':
-                        if (userstate.subscriber) {
-                            eval(v.calls)(channel, userstate.username, params);
-                        }
-                break;
-                default:
-                    eval(v.calls)(channel, userstate.username, params);   
-                break;
-            }
-            console.log(`> Processed command: ${cmds.prefix}${v.responder} from ${userstate.username} permission: ${v.permission}.`)
-        }
-      });
+console.log('\033[2J');
+figlet('SPACEBOT', function(err, data) {
+  if (err) {
+      console.log('Something went wrong...', err);
+  }else{
+      console.log(data);
   }
+}); 
+
+client.on("connecting", (address, port) => {
+  d_console(`Attempting to connect to ${address}:${port}`, 'y');
+});
+
+client.on("connected", (address, port) => {
+  d_console(`Connected to: ${address}:${port}`, 'y');
+});
+
+client.on("logon", () => {
+  d_console(`Connection established: Logging In...`, 'y');
+});
+
+client.on("mods", (channel, mods) => {
+  d_console(`Moderators of ${channel} are ${mods}`, 'g');
+});
+
+client.on("raided", (channel, username, viewers) => {
+  d_console(`Channel ${channel} is being raided by ${username} with ${viewers} viewers.`, 'c');
+});
+
+client.on("message", (channel, userstate, msg, self) => {
+  if (self) return;
+  if (msg.trim().charAt(0) == cmds.prefix) {
+    var params = msg.trim().split(' ');
+    var userPermission = (userstate.badges.broadcaster ? `broadcaster` : (userstate.mod ? `moderator` : (userstate.subscriber ? `subscriber` : `viewer`)));
+    _.each(cmds.commands, function (v, k) {
+      if ((cmds.prefix + v.responder) == params[0]) {
+        if (v.permission.indexOf(userPermission) > -1) {
+          eval(v.calls)(channel, userstate, params);
+          d_console(`Processed command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission}`, 'c');
+        } else {
+          d_console(`Denied command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission} Required Permission: ${v.permission}`, 'c')
+        }
+      }
+    });
+  }
+});
+
+client.on("roomstate", (channel, state) => {
+  d_console(`Joined channel: ${channel}`, 'g');
+  client.say(channel, "/mods", 'y');
+});
+
+client.on("disconnected", (reason) => {
+  d_console(`Disconnected from server, reason: ${reason}`, 'y');
+});
+
+function onPing(channel, userstate, params) {
+    client.say(channel, `@${userstate.username} PONG!`);
 }
 
-/**
- * Client has joined a channel.
- * 
- * @param {*} channel 
- * @param {*} state 
- */
-function onChannelJoinedHandler(channel, state) {
-    console.log(`> Joined channel: ${channel}`);
+function onRand(channel, userstate, params) {
+  var max = params[1];
+  if (isNaN(max)) { max = 100; }
+  client.say(channel, `@${userstate.username} You rolled a ${ Math.round(Math.random() * (max - 1) + 1)}`);
 }
 
-/**
- * Client has disconnected from the server.
- * 
- * @param {*} reason 
- */
-function onDisconnectedHandler(reason) {
-    console.log(`> Disconnected from server, reason: ${reason}`);
+function onSpaceX(channel, userstate, params) {
+  https.get("https://api.spacexdata.com/v3/launches/latest", function(res){
+    var body = '';
+    res.on('data', function(chunk){ body += chunk;});
+    res.on('end', function(){
+        var data = JSON.parse(body);
+         client.say(channel, "Last mission was " + data.mission_name + " flight " + 
+                    data.flight_number + " it was a " + data.rocket.rocket_name + 
+                    " and launched from " + data.launch_site.site_name_long + " on " 
+                    + data.launch_date_local
+          );
+    });
+  }).on('error', function(e){
+        client.say(channel, "Unable to contact SpaceX API.");
+  });
 }
 
-/**
- * Client has connected to the server.
- * 
- * @param {*} addr 
- * @param {*} port 
- */
-function onConnectedHandler (addr, port) {
-    console.log('\033[2J');
-    console.log(`> Connected to: ${addr}:${port}`);
-}
-
-/**
- * Test PING command. 
- * @param {*} channel 
- * @param {*} username 
- * @param {*} params 
- */
-function onPing(channel, username, params) {
-    client.say(channel, `@${username} PONG..`);
+function d_console(msg, c) {
+  var prepend = '';
+  switch(c) {
+    case 'y':
+      prepend = '\x1b[33m';
+    break;
+    case 'c':
+      prepend = '\x1b[36m';
+    break;
+    case 'g':
+      prepend = '\x1b[32m';
+    break;
+    default:
+      prepend = '\x1b[37m';
+    break;
+  }
+  console.log (prepend, "[" + new Date().toLocaleString() + "] > " + msg);
 }
