@@ -5,8 +5,11 @@ const figlet = require("figlet");
 
 const client = new tmi.client({
   identity: {
-    username: "YOUR USERNAME",
-    password: "oauth:1234567890345657789324435534"
+    username: "USERNAME",
+    password: "oauth:12345678902134454545"
+  },
+  connection: {
+    reconnect: true,
   },
   channels: [
     "stevemac555",
@@ -24,12 +27,14 @@ const cmds = {
         rand: {
             responder: 'rand',
             calls: 'onRand',
-            permission: ['broadcaster', 'moderator']
+            permission: ['broadcaster'],
+            delay: 2000
         },
         spacex: {
           responder: 'spacex',
           calls: 'onSpaceX',
-          permission: ['broadcaster', 'moderator', 'subscriber', 'viewer']
+          permission: ['broadcaster', 'moderator', 'subscriber', 'viewer'],
+          delay: 5000,
         }
     }
 }
@@ -72,10 +77,12 @@ client.on("message", (channel, userstate, msg, self) => {
     _.each(cmds.commands, function (v, k) {
       if ((cmds.prefix + v.responder) == params[0]) {
         if (v.permission.indexOf(userPermission) > -1) {
-          eval(v.calls)(channel, userstate, params);
+          setTimeout(function() {
+            eval(v.calls)(channel, userstate, params);
+          }, (v.delay ? v.delay : 1000));
           d_console(`Processed command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission}`, 'c');
         } else {
-          d_console(`Denied command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission} Required Permission: ${v.permission}`, 'c')
+          d_console(`Denied command: ${cmds.prefix}${v.responder} from ${userstate.username}. User Permission: ${userPermission} Required Permission: ${v.permission}`, 'r')
         }
       }
     });
@@ -88,7 +95,7 @@ client.on("roomstate", (channel, state) => {
 });
 
 client.on("disconnected", (reason) => {
-  d_console(`Disconnected from server, reason: ${reason}`, 'y');
+  d_console(`Disconnected from server, reason: ${reason}`, 'r');
 });
 
 function onPing(channel, userstate, params) {
@@ -129,6 +136,9 @@ function d_console(msg, c) {
     break;
     case 'g':
       prepend = '\x1b[32m';
+    break;
+    case 'r':
+      prepend = '\x1b[31m';
     break;
     default:
       prepend = '\x1b[37m';
