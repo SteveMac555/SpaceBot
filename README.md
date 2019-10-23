@@ -23,7 +23,7 @@ You will need to edit the username, password and channels array for the code to 
 
 ### Command Array
 ```
-ping: {
+        ping: {
             responder: 'ping',
             calls: 'onPing',
             permission: ['broadcaster', 'moderator', 'subscriber', 'viewer']
@@ -35,3 +35,9 @@ function onPing(channel, userstate, params) {
     client.say(channel, `@${userstate.username} PONG!`);
 }
 ```
+
+## Features
+* Quickly add commands with permissions.
+* Hook TMI events and perform actions.
+* Add delays to commands (non-verified Bot 800ms delay needed)
+* Detect chat text/commands and create macros.
