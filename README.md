@@ -32,6 +32,7 @@ You will need to edit the username, password and channels array for the code to 
             responder: 'ping',
             calls: 'onPing',
             permission: ['broadcaster', 'moderator', 'subscriber', 'viewer']
+            delay: 1000 //Optional: value in ms.
         },
 ```
 ### Related Function
