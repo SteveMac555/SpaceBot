@@ -47,3 +47,4 @@ function onPing(channel, userstate, params) {
 * Hook TMI events and perform actions.
 * Add delays to commands (non-verified Bot 800ms delay needed)
 * Detect chat text/commands and create macros.
+* Grab command parameters and pass them into the required command (command parser)
