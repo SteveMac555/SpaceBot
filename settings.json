@@ -1,0 +1,12 @@
+{
+    "identity": {
+        "username": "USERNAME",
+        "password": "oauth:123456789"
+    },
+    "connection": {
+        "reconnect": true
+    },
+    "channels": [
+        "#YOUR CHANNEL"
+    ]
+}
