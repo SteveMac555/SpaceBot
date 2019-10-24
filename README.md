@@ -28,6 +28,9 @@ You will need to edit the username, password and channels array for the code to 
 * Modifying the settings.json file with your account and channel information.
 * Creating the function for the command.
 
+### Starting the bot
+```node bot.js```
+
 ### Command Array
 ```
         ping: {
