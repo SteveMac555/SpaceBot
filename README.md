@@ -55,5 +55,8 @@ See the TMI documentation on how to use the rest of them.: https://github.com/tm
 * Quickly add commands with permissions.
 * Hook TMI events and perform actions.
 * Add delays to commands (non-verified Bot 800ms delay needed)
-* Detect chat text/commands and create macros.
+* Detect chat text/commands and output to console.
 * Grab command parameters and pass them into the required command (command parser)
+* JOIN and LEAVE channels without restarting the bot.
+* Command permissions based on broadcaster, subscriber, moderator, viewer
+* Command permissions based on users.
