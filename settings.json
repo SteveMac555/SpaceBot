@@ -1,7 +1,7 @@
 {
     "identity": {
         "username": "USERNAME",
-        "password": "oauth:123456789"
+        "password": "oauth:12345678901234567898"
     },
     "connection": {
         "reconnect": true
