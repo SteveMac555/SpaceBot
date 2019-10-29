@@ -47,6 +47,8 @@ function onPing(channel, userstate, params) {
 }
 ```
 
+All command functions are passed three parameters, the channel that the command was called in. The TMI userstate object, which contains things such as mod, sub, broadcaster status etc. and the parameters the user passed in, e.g. !ping 1 2 3 would pass in an array of 1,2,3 as the third parameter.
+
 ### TMI (Twitch Messaging Interface) Events
 Example of how to use an event is included:
 ```
