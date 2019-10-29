@@ -17,10 +17,13 @@ This project assumes you have a working and upto-date installation of NodeJS. Yo
 
 You need to update settings.json with your account and channel details.
 
+### Channels
+Edit the settings.json file with your channels. There is a filesystem watcher on this file, any changes to the channels array will JOIN or LEAVE whilst the bot is running. Handy if you want to add more channels and wan't no downtime.
+
 ### Example Commands
-* !spacex - Returns the last mission details from their API. Example of a JSON GET request.
-* !ping - Returns simple chat text "PONG"
-* !rand [x] - Returns a random number between the range specified, default range: 1-100
+* !spacex - Returns the last mission details from their API. Example of a JSON GET request and parsing the data back into chat.
+* !ping - Returns simple chat text reply of "PONG"
+* !rand [x] - Returns a random number between the range specified, default range: 1-100. This is an example of using the parameters; default is 100.
 
 ## Editing the code
 You will need to edit the username, password and channels array for the code to run. You can create a new command by:
