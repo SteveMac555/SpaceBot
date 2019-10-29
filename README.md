@@ -22,6 +22,20 @@ Edit the settings.json file with your channels. There is a filesystem watcher on
 
 ### Example Commands
 * !spacex - Returns the last mission details from their API. Example of a JSON GET request and parsing the data back into chat.
+```
+function onSpaceX(channel, userstate, params) {
+  https.get("https://api.spacexdata.com/v3/launches/latest", function(res){
+    var body = '';
+    res.on('data', function(chunk){ body += chunk;});
+    res.on('end', function(){
+        var data = JSON.parse(body);
+         client.say(channel, `Last mission was ${data.mission_name} flight ${data.flight_number} it was a ${data.rocket.rocket_name} and launched from ${data.launch_site.site_name_long} on ${data.launch_date_local}`);
+    });
+  }).on('error', function(e){
+        client.say(channel, "Unable to contact SpaceX API.");
+  });
+}
+```
 * !ping - Returns simple chat text reply of "PONG"
 * !rand [x] - Returns a random number between the range specified, default range: 1-100. This is an example of using the parameters; default is 100.
 
