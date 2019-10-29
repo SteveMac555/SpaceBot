@@ -32,7 +32,7 @@ module.exports = {
             prepend = '\x1b[37m';
           break;
         }
-        console.log (prepend, "[" + new Date().toLocaleString() + "] > " + msg);
+        console.log (prepend, "[" + new Date().toLocaleString() + "] > " + msg); //Debugging
     },
     getSubTier: function (subPlan) {
         if (subPlan == 1000) {
