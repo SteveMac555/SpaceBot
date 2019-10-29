@@ -67,7 +67,7 @@ client.on("message", (channel, userstate, msg, self) => {
       tools.d_console(`[WHISPER] ${userstate.username}: ${msg}`, 'm');
     break;
 }
-
+    
   if (msg.trim().charAt(0) == cmds.prefix) {
     var params = msg.trim().split(' ');
     var userPermission = (userstate.badges.broadcaster ? `broadcaster` : (userstate.mod ? `moderator` : (userstate.subscriber ? `subscriber` : `viewer`)));
