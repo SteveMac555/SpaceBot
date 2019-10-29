@@ -1,5 +1,5 @@
 # SpaceBot - TwitchBot Framework
-This is a Twitch bot framework written in NodeJS, using the Twitch Messaging Interface. The purpose of this framework is to allow you to easily create commands (with permissions) and subscribe to chat events.
+This is a Twitch bot framework written in NodeJS, using the Twitch Messaging Interface. The purpose of this framework is to allow you to easily create commands (with permissions) and subscribe to chat events. NodeJS provides a perfect and fast platform for a Twitch Chatbot.
 
 ![alt text](https://i.imgur.com/ehHCsCW.png)
 
@@ -95,3 +95,8 @@ See the TMI documentation on how to use the rest of them.: https://github.com/tm
 * Command permissions based on broadcaster, subscriber, moderator, viewer
 * Command permissions based on users.
 * Organised files.
+
+## Coming Soon
+* Sockets. With a full control panel populated by data from the Twitch Bot.
+* Twitch API + OAuth Token Generation - For connecting to the v5 API and subscribing to events/webhooks.
+* Database support, either MySQL or a Flat-File JSON based datastore.
