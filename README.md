@@ -100,3 +100,4 @@ See the TMI documentation on how to use the rest of them.: https://github.com/tm
 * Sockets. With a full control panel populated by data from the Twitch Bot.
 * Twitch API + OAuth Token Generation - For connecting to the v5 API and subscribing to events/webhooks.
 * Database support, either MySQL or a Flat-File JSON based datastore.
+* Dynamic commands and URL fetch options without the need for writing code.
