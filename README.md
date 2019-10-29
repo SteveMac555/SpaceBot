@@ -37,7 +37,17 @@ function onSpaceX(channel, userstate, params) {
 }
 ```
 * !ping - Returns simple chat text reply of "PONG"
+```
+function onPing(channel, userstate, params) {
+    client.say(channel, `@${userstate.username} PONG!`);
+}
+```
 * !rand [x] - Returns a random number between the range specified, default range: 1-100. This is an example of using the parameters; default is 100.
+```
+function onRand(channel, userstate, params) {
+  client.say(channel, `@${userstate.username} You rolled a ${ Math.round(Math.random() * ((isNaN(params[1]) ? 100 : params[1]) - 1) + 1)}`);
+}
+```
 
 ## Editing the code
 You will need to edit the username, password and channels array for the code to run. You can create a new command by:
