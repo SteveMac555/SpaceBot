@@ -65,3 +65,4 @@ See the TMI documentation on how to use the rest of them.: https://github.com/tm
 * JOIN and LEAVE channels without restarting the bot.
 * Command permissions based on broadcaster, subscriber, moderator, viewer
 * Command permissions based on users.
+* Organised files.
