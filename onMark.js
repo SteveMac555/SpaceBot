@@ -47,6 +47,5 @@ function onMark(channel, userstate, params) {
  }
 
 module.exports = { 
-    cmds,
     onMark
 };  
